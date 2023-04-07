@@ -1,0 +1,13 @@
+//TODO User to login/sign-up containing user info
+Liquibase
+
+Sign up
+     {Email(unique), Username (unique), Password, Phone(unique)}
+Sign in
+    {PhoneNumber, Password}
+
+UserEntity
+
+Implement Security (plus HTTPS)
+
+Mail Server
