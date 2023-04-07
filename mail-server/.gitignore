@@ -34,3 +34,4 @@ build/
 
 ### sensitive info ###
 client_secret.json
+clientTruststore.jks

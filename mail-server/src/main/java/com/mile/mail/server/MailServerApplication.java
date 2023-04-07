@@ -9,6 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class MailServerApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("javax.net.ssl.trustStore", "src/main/resources/clientTruststore.jks");
+		System.setProperty("javax.net.ssl.trustStorePassword", "thanatos");
 		SpringApplication.run(MailServerApplication.class, args);
 	}
 
