@@ -10,9 +10,8 @@
 	</parent>
 	<groupId>com.mile</groupId>
 	<artifactId>noken-zivot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>noken-zivot</name>
-	<description>Project for giving best possible experience for night life in Skopje/Macedonia</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -30,8 +29,9 @@
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
+		<groupId>org.liquibase</groupId>
+		<artifactId>liquibase-core</artifactId>
+		<version>4.18.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -68,6 +68,26 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>4.18.0</version>
+				<configuration>
+					<propertyFile>/src/main/resources/liquibase.properties</propertyFile>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<configuration>
+							<tag>${project.version}</tag>
+						</configuration>
+						<goals>
+							<goal>update</goal>
+							<goal>tag</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
