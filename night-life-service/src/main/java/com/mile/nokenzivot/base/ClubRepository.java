@@ -33,6 +33,8 @@ interface ClubRepository extends JpaRepository<Club, Long> {
   @Query("SELECT c FROM Club c WHERE c.latitude = ?1 AND c.longitude = ?2")
   Club findByCoordinates(double latitude, double longitude);
 
-  @Query("SELECT c.name as name, c.genre as genre, c.averageCost as averageCost FROM Club c WHERE c.latitude = ?1 AND c.longitude = ?2")
+  @Query("SELECT c.name as name, c.genre as genre,"
+      + " c.averageCost as averageCost, c.rating as rating"
+      + " FROM Club c WHERE c.latitude = ?1 AND c.longitude = ?2")
   OnHoverClub findByCoordinatesHover(double latitude, double longitude);
 }

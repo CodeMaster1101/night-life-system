@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -29,7 +30,7 @@ public class Club {
   private String address;
   private Double latitude;
   private Double longitude;
-  @OneToOne(mappedBy = "club")
-  private PartyEvent event;
+  @OneToMany(mappedBy = "club")
+  private Set<PartyEvent> events;
 
 }

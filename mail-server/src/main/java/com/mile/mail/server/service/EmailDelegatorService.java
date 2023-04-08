@@ -75,6 +75,7 @@ class EmailDelegatorService {
     List<MessagePart> parts = fullMessage.getPayload().getParts();
     String content = "";
     byte[] imageData = null;
+    String date = "";
     for (MessagePart part : parts) {
       String mimeType = part.getMimeType();
       if (mimeType.equals("multipart/alternative")) {
@@ -83,6 +84,7 @@ class EmailDelegatorService {
           String subMimeType = subPart.getMimeType();
           if (subMimeType.equals("text/plain") || subMimeType.equals("text/html")) {
             content = new String(Base64.getDecoder().decode(subPart.getBody().getData()));
+            date = getDateFromContent(subject);
             break;
           }
         }
@@ -90,7 +92,18 @@ class EmailDelegatorService {
         imageData = processImage(message, gmail, part);
       }
     }
-    return new MessageDTO(processSenderMessage(sender), subject, content, imageData);
+    return new MessageDTO(processSenderMessage(sender), subject, content, imageData, date);
+  }
+
+  private String getDateFromContent(String subject) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (int i = subject.length() - 1; i > 0; i--) {
+      if (subject.charAt(i) != ':') {
+        stringBuilder.append(subject.charAt(i));
+      } else {
+        break;
+      }
+    } return stringBuilder.reverse().toString();
   }
 
   private String processSenderMessage(String sender) {

@@ -2,6 +2,8 @@ package com.mile.nokenzivot.base;
 import com.mile.nokenzivot.global.dto.Coordinates;
 import com.mile.nokenzivot.global.entities.Club;
 import org.springframework.stereotype.Service;
+
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,18 +11,21 @@ import java.util.Set;
 class MainService {
 
   private final ClubRepository clubRepository;
+  private final PartyEventRepository partyEventRepository;
   private final ClubMapper clubMapper;
 
-  MainService(ClubRepository clubRepository, ClubMapper clubMapper) {
+  MainService(ClubRepository clubRepository, PartyEventRepository partyEventRepository, ClubMapper clubMapper) {
     this.clubRepository = clubRepository;
+    this.partyEventRepository = partyEventRepository;
     this.clubMapper = clubMapper;
   }
 
-  ClubDTO getClubOnClick(Coordinates coordinates) {
+  ClubDTO getClubOnClick(Coordinates coordinates, String date) {
       Club club = clubRepository.findByCoordinates(
           coordinates.latitude(),
           coordinates.longitude());
-      return clubMapper.convertToDTO(club);
+      PartyEventDTO partyEventDTO = partyEventRepository.findDtoByDateAndClub(Date.valueOf(date), club);
+      return clubMapper.convertToDTO(club, partyEventDTO);
   }
 
   Set<Coordinates> filterPlacesByGenreAndPrice(String genre, String averagePrice) {
@@ -45,5 +50,9 @@ class MainService {
 
   public OnHoverClub getClubOnHover(Coordinates coordinates) {
     return clubRepository.findByCoordinatesHover(coordinates.latitude(), coordinates.longitude());
+  }
+
+  public Set<PartyEventDTO> getAllEvents(String date) {
+    return partyEventRepository.findAllByDate(date);
   }
 }

@@ -13,9 +13,11 @@ class BaseController {
     this.mainService = mainService;
   }
 
-  @GetMapping("/place/on-click/{coordinates}/")
-  public ClubDTO getClubAndEvent(@PathVariable("coordinates") Coordinates coordinates) {
-    return mainService.getClubOnClick(coordinates);
+  @GetMapping("/place/on-click/{coordinates}/{date}")
+  public ClubDTO getClubAndEvent(
+      @PathVariable("coordinates") Coordinates coordinates,
+      @PathVariable("date") String date) {
+    return mainService.getClubOnClick(coordinates, date);
   }
 
   @GetMapping("/filtered")
@@ -30,5 +32,9 @@ class BaseController {
     return mainService.getClubOnHover(coordinates);
   }
 
+  @GetMapping("/events/{date}")
+  public Set<PartyEventDTO> getAllEvents(@PathVariable("date") String date) {
+    return mainService.getAllEvents(date);
+  }
 
 }
