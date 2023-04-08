@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parties MK</title>
+    <link rel="stylesheet" type="text/css" href="C:\Users\mihail.gjorgovski\Documents\party.mk v1.0\sheets\startpage_styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+  
+<body>
+    <header>
+		<img id="logo" src="C:\Users\mihail.gjorgovski\Documents\party.mk v1.0\pic_dir\logo_no_text_v1.0.jpg" alt="Main Logo">
+        <div class="search-container">
+            <form action="#" method="get">
+              <input type="text" placeholder="Search..." name="search">
+              <button type="submit" class="search-button"><img src="C:\Users\mihail.gjorgovski\Documents\party.mk v1.0\pic_dir\search_button.png" alt="Search"></button>
+            </form>
+          </div>
+        <div class="dropdown">
+            <button class="dropbtn">Price</button>
+            <div class="dropdown-content">
+              <a href="#"><img src="C:\Users\mihail.gjorgovski\Documents\party.mk v1.0\pic_dir\price_indicator_low.png" alt="Option 1"></a>
+              <a href="#"><img src="C:\Users\mihail.gjorgovski\Documents\party.mk v1.0\pic_dir\price_indicator_medium.png" alt="Option 2"></a>
+              <a href="#"><img src="C:\Users\mihail.gjorgovski\Documents\party.mk v1.0\pic_dir\price_indicator_high.png" alt="Option 3"></a>
+            </div>
+          </div>
+
+          <a href="C:\Users\mihail.gjorgovski\Documents\party.mk v1.0\sign_in.html" target="_self"><button id="sign-in">Sign In</button></a>
+          <a href="C:\Users\mihail.gjorgovski\Documents\party.mk v1.0\sign_up.html" target="_self"><button id="sign-up">Sign Up</button></a> 
+	</header>
+
+  <div id="app"></div>
+
+  
+  <script type="text/babel">
+    
+    const NightclubsMap = () => {
+    React.useEffect(() => {
+    const initMap = async () => {
+      const skopje = [41.9973, 21.4280];
+      const map = L.map("map").setView(skopje, 13);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+
+      const mileURL = `https://192.168.110.118:8081/api/v1/server-boot/coordinates`;
+      const response = await fetch(mileURL);
+      const data = await response.json();
+      const nightclubs = data.elements;
+      const redIcon = L.icon({
+        iconUrl: './pic_dir/icons8-map-marker-32.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
+      });
+
+      nightclubs.forEach((nightclub) => {
+        const coordinates = nightclub.center || nightclub;
+        const marker = L.marker([coordinates.lat, coordinates.lon], { icon: redIcon }).addTo(map);
+        let tooltipVisible = false;
+
+        const fetchClubInfo = async (lat, lon) => {
+          const geoapifyApiKey = '8e285b751550491eb8888a6f5c9af6b4';
+          const apiUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&limit=1&apiKey=${geoapifyApiKey}`;
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+
+          if (data.features && data.features.length > 0) {
+            const feature = data.features[0];
+            const clubName = feature.properties.name || "Nightclub";
+            const address = feature.properties.address_line2 || "";
+
+            const tooltipContent = `<b>${clubName}</b><br>${address}`;
+            marker.bindTooltip(tooltipContent, {
+              permanent: false,
+              direction: 'right',
+              offset: L.point(7, 0),
+            });
+          }
+        };
+
+        marker.on('mouseover', async () => {
+          if (!tooltipVisible) {
+            await fetchClubInfo(coordinates.lat, coordinates.lon);
+            marker.openTooltip();
+            tooltipVisible = true;
+          }
+        });
+
+        marker.on('mouseout', () => {
+          if (tooltipVisible) {
+            marker.closeTooltip();
+            tooltipVisible = false;
+          }
+        });
+      });
+    };
+
+    initMap();
+  }, []);
+
+  return <div id="map"></div>;
+};
+
+ReactDOM.render(<NightclubsMap />, document.getElementById("app"));
+
+  </script>
+</body>
+</html>

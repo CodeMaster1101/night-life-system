@@ -1,0 +1,73 @@
+<script>
+      function initMap() {
+        const mapCenter = [41.9973, 21.4274];
+        const map = L.map('map').setView(mapCenter, 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        L.marker(mapCenter).addTo(map);
+      }
+      window.addEventListener('load', initMap);
+    </script>
+    <script>
+      function initMap() {
+  // Set the coordinates for the map center
+  const mapCenter = [41.9973, 21.4274];
+  
+  // Create the map
+  const map = L.map("map").setView(mapCenter, 13);
+  
+  // Add the tile layer to the map
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  // Add a marker for the map center
+  L.marker(mapCenter).addTo(map);
+  
+  // Make a request to the Geoapify Places API to get information about nightclubs in Skopje
+  const url = `https://api.geoapify.com/v1/places?categories=nightlife:club&filter=countrycode:MK&limit=10&apiKey=${apiKey}&bbox=${map.getBounds().toBBoxString()}`;
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      // Add markers for each nightclub
+      data.features.forEach(feature => {
+        const marker = L.marker([feature.properties.lat, feature.properties.lon]).addTo(map);
+        marker.bindPopup(feature.properties.name);
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+    </script>
+    <script>
+      // Set the coordinates for the map center
+      const mapCenter = [41.9973, 21.4274];
+      
+      // Create the map
+      const map = L.map('map').setView(mapCenter, 13);
+      
+      // Add the OpenStreetMap tile layer to the map
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        maxZoom: 19
+      }).addTo(map);
+      
+      // Add markers for nightclubs in Skopje
+      const nightclubs = [
+        { name: "Club Epicentar", location: [42.0079, 21.4048] },
+        { name: "Club Sektor909", location: [42.0042, 21.4145] },
+        { name: "Club Museum", location: [41.9991, 21.4298] },
+        { name: "Club Kapan An", location: [41.9998, 21.4301] },
+        { name: "Club Havana", location: [42.0002, 21.4298] },
+        { name: "Stanica 26", location: [41.9915332438037, 21.425544538638448] }
+      ];
+      
+      nightclubs.forEach(nightclub => {
+        L.marker(nightclub.location)
+          .addTo(map)
+          .bindPopup(nightclub.name);
+      });
+    </script>
