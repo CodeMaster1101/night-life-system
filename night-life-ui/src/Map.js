@@ -10,14 +10,15 @@ function Map() {
   useEffect(() => {
     async function fetchNightclubs() {
       const response = await fetch(
-        'https://overpass-api.de/api/interpreter?data=[out:json][timeout:25];node["amenity"="nightclub"](41.9816, 21.4021, 42.0276, 21.4857);out;'
+        'https://MILEIP:8443/api/v1/server-boot/coordinates'
       );
       const data = await response.json();
-      setNightclubs(data.elements);
+      setNightclubs(data);
     }
 
     fetchNightclubs();
   }, []);
+
 
   const getIconSize = (zoom) => {
     const baseSize = 10;
@@ -43,23 +44,41 @@ function Map() {
     return baseSize + scaleFactor * (zoom / 20);
   };
 
-  const handleMarkerMouseOver = async (e, marker) => {
-    const { lat, lng } = e.latlng;
-    const zoom = mapRef.current.getZoom();
-    const fontSize = getTooltipFontSize(zoom);
+ const handleMarkerMouseOver = async (e, marker) => {
+  const { lat, lng } = e.target.getLatLng();
+  const zoom = mapRef.current.getZoom();
+  const fontSize = getTooltipFontSize(zoom);
 
-    const geoapifyApiKey = '8e285b751550491eb8888a6f5c9af6b4';
-    const apiUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&limit=1&apiKey=${geoapifyApiKey}`;
-    const response = await fetch(apiUrl);
+  const apiUrl = 'https://MILEIP:8443/api/v1/map/on-hover';
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      latitude: lat,
+      longitude: lng,
+    }),
+  });
+
+  if (response.ok) {
     const data = await response.json();
-    const feature = data.features[0];
-    const clubName = feature.properties.name || 'Nightclub';
-    const address = feature.properties.address_line2 || '';
 
-    const tooltipContent = `<b>${clubName}</b><br>${address}`;
+    const clubName = data.name || 'Nightclub';
+    const genre = data.genre || '';
+    const averageCost = data.averageCost !== undefined ? data.averageCost : '';
+    const address = data.address || '';
+
+    const tooltipContent = `<b>${clubName}</b><br>Genre: ${genre}<br>Avg. cost: ${averageCost}<br>${address}`;
     marker.getTooltip().setContent(tooltipContent);
     marker.getTooltip().getElement().style.fontSize = `${fontSize}px`;
-  };
+  } else {
+    console.error('Error fetching data:', response.statusText);
+  }
+};
+
+
+
 
   const handleZoomEnd = () => {
     const zoom = mapRef.current.getZoom();
@@ -82,12 +101,12 @@ function Map() {
     >
       <TileLayer
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        attribution='&copy; <a href="https://carto.com/">CARTO</a> | <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+  
       />
-      {nightclubs.map((nightclub) => (
+      {nightclubs.map((nightclub, index) => (
         <Marker
-          key={nightclub.id}
-          position={[nightclub.lat, nightclub.lon]}
+          key={index}
+          position={[nightclub.latitude, nightclub.longitude]}
           icon={redIcon(13)}
           eventHandlers={{
             mouseover: (e) => {
