@@ -27,21 +27,23 @@ class HandleNewMailService {
   public void convertMailToEvent(
       MessageDTO mail) {
     Club club = baseFacade.getClubByEmail(mail.sender());
-    Optional<PartyEvent> event = baseFacade.getEventByDateAndClub(Date.valueOf(mail.date()), club);
+    Date date = Date.valueOf(mail.date());
+    Optional<PartyEvent> event = baseFacade.getEventByDateAndClub(date, club);
     if (event.isPresent()) {
-      partyEventPersistenceService.update(convertMailDTOToPartyEvent(mail, event.get()));
+      partyEventPersistenceService.update(convertMailDTOToPartyEvent(mail, event.get(), date));
     } else {
       PartyEvent partyEvent = new PartyEvent();
       partyEvent.setClub(club);
-      partyEventPersistenceService.persist(convertMailDTOToPartyEvent(mail, partyEvent));
+      partyEventPersistenceService.persist(convertMailDTOToPartyEvent(mail, partyEvent, date));
     }
   }
-  private PartyEvent convertMailDTOToPartyEvent(MessageDTO mail, PartyEvent partyEvent) {
+  private PartyEvent convertMailDTOToPartyEvent(MessageDTO mail, PartyEvent partyEvent, Date date) {
     partyEvent.setDescription(mail.description());
     partyEvent.setName(mail.subject());
     if (mail.data() != null) {
       partyEvent.setThumbnail(mail.data());
     }
+    partyEvent.setDate(date);
     return partyEvent;
   }
 }

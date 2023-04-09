@@ -26,10 +26,9 @@ public class Club {
   private String email;
   private String genre;
   private int averageCost;
-  private double rating;
   private String address;
-  private Double latitude;
-  private Double longitude;
+  private double latitude;
+  private double longitude;
   @OneToMany(mappedBy = "club")
   private Set<PartyEvent> events;
 

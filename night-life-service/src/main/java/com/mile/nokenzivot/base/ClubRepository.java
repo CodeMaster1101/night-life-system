@@ -28,13 +28,12 @@ interface ClubRepository extends JpaRepository<Club, Long> {
   Optional<Club> findByEmail(String sender);
 
   @Query("SELECT c.latitude as latitude, c.longitude as longitude FROM Club c")
-  Set<Coordinates> getAllCoordinatesForClubs();
+  Set<Object[]> getAllCoordinatesForClubs();
 
-  @Query("SELECT c FROM Club c WHERE c.latitude = ?1 AND c.longitude = ?2")
+  @Query("SELECT new com.mile.nokenzivot.global.dto.Coordinates(c.latitude, c.longitude) FROM Club c")
   Club findByCoordinates(double latitude, double longitude);
 
-  @Query("SELECT c.name as name, c.genre as genre,"
-      + " c.averageCost as averageCost, c.rating as rating"
+  @Query("SELECT new com.mile.nokenzivot.base.OnHoverClub(c.name, c.genre, c.averageCost, c.address)"
       + " FROM Club c WHERE c.latitude = ?1 AND c.longitude = ?2")
   OnHoverClub findByCoordinatesHover(double latitude, double longitude);
 }

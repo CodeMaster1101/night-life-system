@@ -1,11 +1,13 @@
 package com.mile.nokenzivot;
 
+import lombok.SneakyThrows;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NokenZivotApplication {
+class NokenZivotApplication {
 
+	@SneakyThrows
 	public static void main(String[] args) {
 		SpringApplication.run(NokenZivotApplication.class, args);
 	}

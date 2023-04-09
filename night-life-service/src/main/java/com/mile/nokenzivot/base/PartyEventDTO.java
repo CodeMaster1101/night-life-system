@@ -1,7 +1,18 @@
 package com.mile.nokenzivot.base;
 
-record PartyEventDTO(
-    String name,
-    String description,
-    byte[] thumbnail,
-    String clubName) {}
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+class PartyEventDTO {
+  private String name;
+  private String description;
+  private byte[] thumbnail;
+  private String clubName;
+}
+

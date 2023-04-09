@@ -13,9 +13,9 @@ class BaseController {
     this.mainService = mainService;
   }
 
-  @GetMapping("/place/on-click/{coordinates}/{date}")
-  public ClubDTO getClubAndEvent(
-      @PathVariable("coordinates") Coordinates coordinates,
+  @PostMapping("/place/on-click/{date}")
+  public PartyEventDTO getClubAndEvent(
+      @RequestBody Coordinates coordinates,
       @PathVariable("date") String date) {
     return mainService.getClubOnClick(coordinates, date);
   }
@@ -27,8 +27,8 @@ class BaseController {
     return mainService.filterPlacesByGenreAndPrice(genre, averagePrice);
   }
 
-  @GetMapping("/place/{coordinates}")
-  public OnHoverClub getClubOnHover(@PathVariable("coordinates") Coordinates coordinates) {
+  @PostMapping("/on-hover")
+  public OnHoverClub getClubOnHover(@RequestBody Coordinates coordinates) {
     return mainService.getClubOnHover(coordinates);
   }
 

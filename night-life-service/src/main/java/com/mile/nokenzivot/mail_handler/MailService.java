@@ -25,7 +25,7 @@ class MailService {
         String successfulHandle = "Handled mail successfully, sender: " + mail.sender();
         logger.info(successfulHandle);
       } catch (Exception e) {
-        String errorMsg = e.getMessage();
+        String errorMsg = e.getCause() + "message: " + e.getMessage();
         logger.error(errorMsg);
       }
     }

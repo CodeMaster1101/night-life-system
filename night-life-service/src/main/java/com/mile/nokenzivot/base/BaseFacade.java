@@ -12,26 +12,29 @@ import java.util.Set;
 @Service
 public class BaseFacade {
 
-  private final ClubRepository clubRepository;
-  private final PartyEventRepository partyEventRepository;
+  private final MainService mainService;
 
-  public BaseFacade(ClubRepository clubRepository, PartyEventRepository partyEventRepository) {
-    this.clubRepository = clubRepository;
-    this.partyEventRepository = partyEventRepository;
+  public BaseFacade(MainService mainService) {
+    this.mainService = mainService;
   }
 
   public Club getClubByEmail(String sender) {
-    Optional<Club> club = clubRepository.findByEmail(sender);
-    if (club.isPresent()) {
-      return club.get();
-    } throw new NightLifeException("Club was not present for this email", new RuntimeException());
+   return mainService.getClubByEmail(sender);
   }
 
   public Optional<PartyEvent> getEventByDateAndClub(Date date, Club club) {
-    return partyEventRepository.findByDateAndClub(date, club);
+    return mainService.findEventByDateAndClub(date, club);
   }
 
   public Set<Coordinates> getAllClubsCoordinates() {
-    return clubRepository.getAllCoordinatesForClubs();
+    return mainService.getAllCoordinates();
+  }
+
+  public Club createNewClub(Club club) {
+    return mainService.saveClub(club);
+  }
+
+  public void removeOutdatedEvents(Date date) {
+    mainService.removeAllOutdatedEvents(date);
   }
 }

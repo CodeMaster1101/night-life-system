@@ -15,15 +15,18 @@ import java.util.Set;
 @Transactional(readOnly = true)
 interface PartyEventRepository extends JpaRepository<PartyEvent, Long> {
 
-  @Query("SELECT e.name as name, e.description as description,"
-      + " e.thumbnail as thumbnail, e.club.name as clubname"
+  @Query("SELECT new com.mile.nokenzivot.base.PartyEventDTO(e.name, e.description,"
+      + " e.thumbnail, e.club.name)"
       + " FROM PartyEvent e WHERE e.date = ?1 AND e.club = ?2")
   PartyEventDTO findDtoByDateAndClub(Date date, Club club);
   @Query("SELECT e FROM PartyEvent e WHERE e.date =?1 AND e.club = ?2")
   Optional<PartyEvent> findByDateAndClub(Date date, Club club);
 
-  @Query("SELECT e.name as name, e.description as description,"
-      + " e.thumbnail as thumbnail, e.club.name as clubname"
+  @Query("SELECT new com.mile.nokenzivot.base.PartyEventDTO(e.name, e.description,"
+      + " e.thumbnail, e.club.name)"
       + " FROM PartyEvent e WHERE e.date = ?1")
   Set<PartyEventDTO> findAllByDate(String date);
+
+  @Query("DELETE FROM PartyEvent e WHERE e.date < ?1")
+  void deleteAllBeforeSpecificDate(Date date);
 }

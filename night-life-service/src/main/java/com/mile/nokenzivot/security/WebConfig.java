@@ -5,13 +5,13 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-class CorsConfiguration implements WebMvcConfigurer {
-
+class WebConfig implements WebMvcConfigurer {
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**")
-        .allowedOriginPatterns("https://trusted-origin.com")
-        .allowedMethods("GET", "POST");
+    registry.addMapping("/api/**")
+        .allowedOriginPatterns("*")
+        .allowCredentials(true)
+        .allowedMethods("GET", "POST", "PUT", "DELETE");
   }
 }

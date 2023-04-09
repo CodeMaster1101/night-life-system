@@ -1,3 +1,17 @@
 package com.mile.nokenzivot.global.dto;
 
-public record Coordinates(double latitude, double longitude) {}
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.stereotype.Component;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Component
+public class Coordinates {
+  private double latitude;
+  private double longitude;
+}
