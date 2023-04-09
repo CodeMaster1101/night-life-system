@@ -1,15 +1,20 @@
 package com.mile.nokenzivot.base;
+
 import com.mile.nokenzivot.global.dto.Coordinates;
+import com.mile.nokenzivot.global.dto.TypedCoordinates;
 import com.mile.nokenzivot.global.entities.Club;
 import com.mile.nokenzivot.global.entities.PartyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 class MainService {
@@ -26,51 +31,60 @@ class MainService {
     this.partyEventRepository = partyEventRepository;
   }
 
-  PartyEventDTO getClubOnClick(Coordinates coordinates, String date) {
-    Club club = clubRepository.findByCoordinates(
+  OnClickClub getClubOnClick(Coordinates coordinates, String date) {
+    OnHoverClub onHoverClub = clubRepository.findByCoordinates(
         coordinates.getLatitude(),
         coordinates.getLongitude());
-    return partyEventRepository.findDtoByDateAndClub(Date.valueOf(date), club);
+    return new OnClickClub(
+        onHoverClub,
+        partyEventRepository.findDtoByDateAndClubName(Date.valueOf(date), onHoverClub.getName()));
   }
 
-  Set<Coordinates> filterPlacesByGenreAndPrice(String genre, String averagePrice) {
+  Set<Coordinates> filterPlaces(String genre, Integer averagePrice, String type) {
     try {
-      return validateAndReturnFilteredInformation(genre, averagePrice);
+      return validateAndReturnFilteredInformation(genre, averagePrice, type);
     } catch (Exception e) {
       throw new NightLifeException("Something went wrong when fetching the filtered POIs, cause: ", e);
     }
   }
 
-  private Set<Coordinates> validateAndReturnFilteredInformation(String genre, String averagePrice) {
-    if (genre == null && averagePrice == null) {
+  private Set<Coordinates> validateAndReturnFilteredInformation(String genre, Integer averagePrice, String type) {
+    if (genre == null && averagePrice == null && type == null) {
       return new HashSet<>();
-    } else if (genre != null && averagePrice != null) {
-      return clubRepository.findByGenreAndAveragePrice(genre, averagePrice);
-    } else if (genre != null) {
-      return clubRepository.findByGenre(genre);
-    }  else {
-      return clubRepository.findByAveragePrice(averagePrice);
     }
+    Specification<Club> spec = (root, query, criteriaBuilder) ->
+        getPredicate(genre, averagePrice, type, root, criteriaBuilder);
+    return clubRepository.findAll(spec)
+        .stream()
+        .map(club -> new Coordinates(club.getLatitude(), club.getLongitude()))
+        .collect(Collectors.toSet());
+  }
+
+  private Predicate getPredicate(String genre, Integer averagePrice, String type, Root<Club> root, CriteriaBuilder criteriaBuilder) {
+    List<Predicate> predicates = new ArrayList<>();
+    if (genre != null) {
+      predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("genre")), genre.toLowerCase()));
+    }
+    if (averagePrice != null) {
+      predicates.add(criteriaBuilder.equal(root.get("averageCost"), averagePrice));
+    }
+    if (type != null) {
+      predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("type")), type.toLowerCase()));
+    }
+    return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
   }
 
   OnHoverClub getClubOnHover(Coordinates coordinates) {
-    return clubRepository.findByCoordinatesHover(coordinates.getLatitude(),
+    return clubRepository.findByCoordinates(coordinates.getLatitude(),
         coordinates.getLongitude());
   }
 
   Set<PartyEventDTO> getAllEvents(String date) {
-    return partyEventRepository.findAllByDate(date);
+    return partyEventRepository.findAllByDate(Date.valueOf(date));
   }
 
-  Set<Coordinates> getAllCoordinates() {
-    Set<Object[]> results = clubRepository.getAllCoordinatesForClubs();
-    Set<Coordinates> coordinates = new HashSet<>();
-    for (Object[] result : results) {
-      double latitude = (double) result[0];
-      double longitude = (double) result[1];
-      coordinates.add(new Coordinates(latitude, longitude));
-    }
-    return coordinates;
+  Set<TypedCoordinates> getAllCoordinates() {
+    return clubRepository.getAllCoordinatesForClubs();
   }
 
   Optional<PartyEvent> findEventByDateAndClub(Date date, Club club) {

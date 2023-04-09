@@ -18,6 +18,7 @@ class CreateClubMapper {
       createClubDTO.address(),
       createClubDTO.latitude(),
       createClubDTO.longitude(),
+      createClubDTO.type(),
       new HashSet<>()
     );
   }
@@ -30,7 +31,8 @@ class CreateClubMapper {
         club.getAverageCost(),
         club.getAddress(),
         club.getLatitude(),
-        club.getLongitude()
+        club.getLongitude(),
+        club.getType()
     );
   }
 

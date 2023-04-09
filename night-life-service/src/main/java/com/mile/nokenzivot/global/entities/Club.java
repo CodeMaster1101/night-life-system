@@ -29,7 +29,7 @@ public class Club {
   private String address;
   private double latitude;
   private double longitude;
+  private String type;
   @OneToMany(mappedBy = "club")
   private Set<PartyEvent> events;
-
 }

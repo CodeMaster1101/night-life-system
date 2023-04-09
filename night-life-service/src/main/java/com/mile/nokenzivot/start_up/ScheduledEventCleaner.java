@@ -16,7 +16,7 @@ class ScheduledEventCleaner {
     this.baseFacade = baseFacade;
   }
 
-  @Scheduled
+  @Scheduled(fixedRate = 600000)
   public void clearEventsEveryDay() {
     Date date = Date.valueOf(LocalDate.now());
     baseFacade.removeOutdatedEvents(date);

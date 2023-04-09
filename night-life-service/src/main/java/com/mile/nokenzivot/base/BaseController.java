@@ -14,7 +14,7 @@ class BaseController {
   }
 
   @PostMapping("/place/on-click/{date}")
-  public PartyEventDTO getClubAndEvent(
+  public OnClickClub getClubAndEvent(
       @RequestBody Coordinates coordinates,
       @PathVariable("date") String date) {
     return mainService.getClubOnClick(coordinates, date);
@@ -23,8 +23,9 @@ class BaseController {
   @GetMapping("/filtered")
   public Set<Coordinates> filterPlacesByGenreAndPrice(
       @RequestParam(value = "genre", required = false) String genre,
-      @RequestParam(value = "averagePrice", required = false) String averagePrice) {
-    return mainService.filterPlacesByGenreAndPrice(genre, averagePrice);
+      @RequestParam(value = "averagePrice", required = false) Integer averagePrice,
+      @RequestParam(value = "type", required = false) String type) {
+    return mainService.filterPlaces(genre, averagePrice, type);
   }
 
   @PostMapping("/on-hover")

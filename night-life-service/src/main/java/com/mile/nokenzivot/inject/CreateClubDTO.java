@@ -7,4 +7,5 @@ record CreateClubDTO(
     int averageCost,
     String address,
     double latitude,
-    double longitude) {}
+    double longitude,
+    String type) {}

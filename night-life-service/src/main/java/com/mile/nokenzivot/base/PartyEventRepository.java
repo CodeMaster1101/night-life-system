@@ -17,15 +17,15 @@ interface PartyEventRepository extends JpaRepository<PartyEvent, Long> {
 
   @Query("SELECT new com.mile.nokenzivot.base.PartyEventDTO(e.name, e.description,"
       + " e.thumbnail, e.club.name)"
-      + " FROM PartyEvent e WHERE e.date = ?1 AND e.club = ?2")
-  PartyEventDTO findDtoByDateAndClub(Date date, Club club);
+      + " FROM PartyEvent e WHERE e.date = ?1 AND e.club.name = ?2")
+  PartyEventDTO findDtoByDateAndClubName(Date date, String clubName);
   @Query("SELECT e FROM PartyEvent e WHERE e.date =?1 AND e.club = ?2")
   Optional<PartyEvent> findByDateAndClub(Date date, Club club);
 
   @Query("SELECT new com.mile.nokenzivot.base.PartyEventDTO(e.name, e.description,"
       + " e.thumbnail, e.club.name)"
       + " FROM PartyEvent e WHERE e.date = ?1")
-  Set<PartyEventDTO> findAllByDate(String date);
+  Set<PartyEventDTO> findAllByDate(Date date);
 
   @Query("DELETE FROM PartyEvent e WHERE e.date < ?1")
   void deleteAllBeforeSpecificDate(Date date);

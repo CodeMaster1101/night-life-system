@@ -1,10 +1,9 @@
 package com.mile.nokenzivot.base;
 
-import com.mile.nokenzivot.global.dto.Coordinates;
+import com.mile.nokenzivot.global.dto.TypedCoordinates;
 import com.mile.nokenzivot.global.entities.Club;
 import com.mile.nokenzivot.global.entities.PartyEvent;
 import org.springframework.stereotype.Service;
-
 import java.sql.Date;
 import java.util.Optional;
 import java.util.Set;
@@ -26,7 +25,7 @@ public class BaseFacade {
     return mainService.findEventByDateAndClub(date, club);
   }
 
-  public Set<Coordinates> getAllClubsCoordinates() {
+  public Set<TypedCoordinates> getAllClubsCoordinates() {
     return mainService.getAllCoordinates();
   }
 

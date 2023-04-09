@@ -1,7 +1,7 @@
 package com.mile.nokenzivot.start_up;
 
 import com.mile.nokenzivot.base.BaseFacade;
-import com.mile.nokenzivot.global.dto.Coordinates;
+import com.mile.nokenzivot.global.dto.TypedCoordinates;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +19,7 @@ class StartUpController {
   }
 
   @GetMapping("/coordinates")
-  public Set<Coordinates> getCoordinates() {
+  public Set<TypedCoordinates> getCoordinates() {
     return baseFacade.getAllClubsCoordinates();
   }
 
