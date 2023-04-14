@@ -26,4 +26,5 @@ interface ClubRepository extends JpaRepository<Club, Long>, JpaSpecificationExec
       + " FROM Club c WHERE c.latitude = ?1 AND c.longitude = ?2")
   OnHoverClub findByCoordinates(double latitude, double longitude);
 
+  Club findByName(String placeName);
 }

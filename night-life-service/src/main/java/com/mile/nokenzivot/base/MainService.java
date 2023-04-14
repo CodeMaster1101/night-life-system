@@ -110,4 +110,8 @@ class MainService {
       logger.error("Unsuccessfully deleted events");
     }
   }
+
+  Club getClubByName(String placeName) {
+    return clubRepository.findByName(placeName);
+  }
 }

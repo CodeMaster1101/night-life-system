@@ -1,6 +1,7 @@
 package com.mile.nokenzivot.mail_handler;
 
 import com.mile.nokenzivot.base.BaseFacade;
+import com.mile.nokenzivot.global.CustomPersistenceService;
 import com.mile.nokenzivot.global.entities.Club;
 import com.mile.nokenzivot.global.entities.PartyEvent;
 import org.springframework.stereotype.Service;
@@ -11,12 +12,12 @@ import java.sql.Date;
 import java.util.Optional;
 
 @Service
-class HandleNewMailService {
+class HandleEventPersistence {
   private final BaseFacade baseFacade;
   private final CustomPersistenceService<PartyEvent> partyEventPersistenceService;
 
 
-  HandleNewMailService(
+  HandleEventPersistence(
       BaseFacade baseFacade,
       CustomPersistenceService<PartyEvent> partyEventPersistenceService) {
     this.baseFacade = baseFacade;

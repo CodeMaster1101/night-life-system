@@ -36,4 +36,8 @@ public class BaseFacade {
   public void removeOutdatedEvents(Date date) {
     mainService.removeAllOutdatedEvents(date);
   }
+
+  public Club getClubByName(String placeName) {
+    return mainService.getClubByName(placeName);
+  }
 }
