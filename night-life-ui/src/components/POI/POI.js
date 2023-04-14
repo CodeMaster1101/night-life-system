@@ -27,7 +27,7 @@ function POI({ mapRef, position, onPOIClick }) {
   const handleMarkerClick = async (e) => {
     const { lat, lng } = e.target.getLatLng();
     const coordinates = { latitude: lat, longitude: lng };
-    const date = "2022-05-15"; // Get the current date in 'YYYY-MM-DD' format
+    const date = "2023-05-15"; // Get the current date in 'YYYY-MM-DD' format
     const data = await fetchClubAndEvent(coordinates, date);
     if (data) {
       onPOIClick(data);
